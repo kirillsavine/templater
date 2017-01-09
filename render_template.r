@@ -51,7 +51,7 @@ render_template=function(i_path_to_template="templates/1.html",...){
 
 	}
 
-	l_clone
+	paste(l_clone,collapse="")
 
 }
 
