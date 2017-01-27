@@ -52,10 +52,10 @@ render_template=function(i_path_to_template="templates/1.html",...){
 
 	eval_occur=grep("\\{\\%",l_clone)
 	if(length(eval_occur)>0){	
-		for(i in 1:length(eval_occur)){		#		i=2
+		for(i in 1:length(eval_occur)){		#		i=1
 
 			#st=eval_occur[i]
-			st=grep("\\{\\%",l_clone)
+			st=grep("\\{\\%",l_clone)[1]
 			en=grep("\\%\\}",l_clone[st:length(l_clone)])[1]+st-1
 			
 			item=l_clone[st:en]
