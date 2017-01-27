@@ -5,6 +5,14 @@
 
 fis=function(pat,x){gregexpr(pat,x)[[1]][1]}
 
+append_repl=function(l,inj,num){
+	res=append(l, inj, after=num)
+	res=res[-num]
+	res
+}
+			
+
+
 render_template=function(i_path_to_template="templates/1.html",...){
 	
 	my_args=list(...)
@@ -42,14 +50,15 @@ render_template=function(i_path_to_template="templates/1.html",...){
 		}
 	}
 
-	eval_occur=grep("\\{\\%",l)
+	eval_occur=grep("\\{\\%",l_clone)
 	if(length(eval_occur)>0){	
-		for(i in 1:length(eval_occur)){		#		i=1
+		for(i in 1:length(eval_occur)){		#		i=2
 
-			st=eval_occur[i]
-			en=grep("\\%\\}",l[st:length(l)])[1]+st-1
+			#st=eval_occur[i]
+			st=grep("\\{\\%",l_clone)
+			en=grep("\\%\\}",l_clone[st:length(l_clone)])[1]+st-1
 			
-			item=l[st:en]
+			item=l_clone[st:en]
 			item=item[!(item %in% c(""))]
 			item=paste(item,collapse=";")
 			
@@ -61,20 +70,22 @@ render_template=function(i_path_to_template="templates/1.html",...){
 			#item_core=item_core[!(item_core %in% c("",item_befo,item_afte))]
 			
 			
+
+			
 			eval(parse(text=paste(c("funct=function(){",item_core,"};"),collapse=";")))
-			res=paste0(item_befo,paste(funct(),collapse=""),item_afte)
+			res=c(item_befo,unlist(funct()),item_afte)
 			
 			if(length(st:en)>1){
-				l_clone[st]=res
 				l_clone[(st+1):en]=""	
+				l_clone=append_repl(l_clone,res,st)		
 			}else{
-				l_clone[st:en]=res
+				l_clone=append_repl(l_clone,res,st)	
 			}	
 
 		}
 	}
 
 	paste(l_clone,collapse="")
+	return(l_clone)
 
 }
-
