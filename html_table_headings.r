@@ -1,4 +1,4 @@
-﻿html_table_headings=function(
+html_table_headings=function(
 i_data=chun,
 i_col_names=c("2017-01-04", "2017-01-05"),
 i_headings="ag",
