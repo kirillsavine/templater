@@ -1,2 +1,5 @@
 # templater
-Simple HTML templating using R (WIP)
+
+**work in progress**
+
+*Simple HTML templating using R*
