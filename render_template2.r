@@ -1,4 +1,5 @@
 
+
 scan_template=function(x,directive=c("\\{\\{","\\}\\}")){
 	op=directive[1]
 	cl=directive[2]
@@ -32,11 +33,11 @@ scan_template=function(x,directive=c("\\{\\{","\\}\\}")){
 			}
 		}else{
 			if(curcode %in% c(3,4)){
-				dat_copy[i-flag,"res"]=paste(dat_copy[i-flag,"res"],";",dat$x[i],collapse="\n")
+				dat_copy[i-flag,"res"]=paste(dat_copy[i-flag,"res"],"\n",dat$x[i],collapse="\n")
 				dat_copy[i,"res"]=""
 				flag=flag+1
 			}else if(curcode==2){
-				dat_copy[i-flag,"res"]=paste(dat_copy[i-flag,"res"],";",dat$x[i],collapse="\n")
+				dat_copy[i-flag,"res"]=paste(dat_copy[i-flag,"res"],"\n",dat$x[i],collapse="\n")
 				dat_copy[i,"res"]=""
 				flag=0		
 			}else if(curcode %in% c(0,1)){
@@ -50,7 +51,6 @@ scan_template=function(x,directive=c("\\{\\{","\\}\\}")){
 	dat_copy$res
 
 }
-
 
 
 
@@ -102,8 +102,13 @@ eval_code=function(x, directive, ...){
 	
 
 	if(directive[1]=="\\{\\%"){
-		eval(parse(text=paste(c("funct=function(){",x,"};"),collapse=";")))	
+		script_content=paste(c("funct=function(){",x,"};"))
+		fil=tempfile();cat(fil)
+		writeLines(script_content,fil)
+		source(file=fil)
+		res=funct()
 		res=toString(unlist(funct()))
+		unlink(fil,force = TRUE)
 	}else if(directive[1]=="\\{\\{"){
 		var_name=toString(trim(gsub(";","",x)))
 		var_val=ifelse(exists(var_name),get(var_name),"")
@@ -132,21 +137,20 @@ render_direct=function(x,directive=c("\\{\\{","\\}\\}"),...){
 	dat_t=dat[[2]]
 	
 	#	j=1
-	for(j in 1:nrow(dat_p)){
+	for(j in 1:nrow(dat_p)){		#		j=1
 		my_item_info=dat_p[j,]
 		my_line=dat_t[dat_p$pos[j]]
 		my_eval=eval_code(x=my_item_info$item,directive=c(op,cl),...)
-		dat_t[dat_p$pos[j]]=gsub(paste0(op," *",quotemeta(my_item_info$item)," *",cl),my_eval,my_line,perl=TRUE)
-	} 
-
+		#dat_t[dat_p$pos[j]]=gsub(paste0(op," *",quotemeta(my_item_info$item)," *",cl),my_eval,my_line,perl=TRUE)
+		dat_t[dat_p$pos[j]]=my_eval
+	}
 	dat_t
 }
 
 render_template2=function(i_path_to_template,...){
 	my_args=list(...)
 	for(h in 1:length(my_args)){eval(parse(text=paste0(names(my_args[h]),"=my_args[[h]]")))}	
-	
-
+	#browser()
 	x=readLines(i_path_to_template)
 	p1=render_direct(x,directive=c("\\{\\%","\\%\\}"),...)
 	p2=render_direct(p1,directive=c("\\{\\{","\\}\\}"),...)
