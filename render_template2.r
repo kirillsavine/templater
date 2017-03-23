@@ -102,12 +102,18 @@ eval_code=function(x, directive, ...){
 	
 
 	if(directive[1]=="\\{\\%"){
-		script_content=paste(c("funct=function(){",x,"};"))
-		fil=tempfile();cat(fil)
+		script_content=paste(c(
+			"funct=function(...){",
+			"my_args=list(...)",
+			"for(h in 1:length(my_args)){eval(parse(text=paste0(names(my_args[h]),\"=my_args[[h]]\")))}",				
+			x,
+			"};"
+		))
+		fil=tempfile();cat(fil)		#		fil="C:\\Users\\kis\\AppData\\Local\\Temp\\RtmpKwB0Pd\\file44342fcb51c0"
 		writeLines(script_content,fil)
 		source(file=fil)
-		res=funct()
-		res=toString(unlist(funct()))
+		res=funct(...)
+		res=toString(unlist(res))
 		unlink(fil,force = TRUE)
 	}else if(directive[1]=="\\{\\{"){
 		var_name=toString(trim(gsub(";","",x)))
@@ -156,4 +162,3 @@ render_template2=function(i_path_to_template,...){
 	p2=render_direct(p1,directive=c("\\{\\{","\\}\\}"),...)
 	p2
 }
-
