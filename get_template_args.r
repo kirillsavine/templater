@@ -1,7 +1,8 @@
+ get_tempalte_args=function(x,directive=c("\\{\\{","\\}\\}")){
 
-function(x,directive=c("\\{\\{","\\}\\}")){
-
-
+	
+	 
+	 
         mypat=function(pat,x){as.numeric(gregexpr(pat,x)[[1]])}
         
         mypos=function(pat,x,positions){
