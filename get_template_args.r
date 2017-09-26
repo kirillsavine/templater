@@ -1,5 +1,5 @@
 
-get_tempalte_args=function(x,directive=c("\\{\\{","\\}\\}")){
+get_template_args=function(x,directive=c("\\{\\{","\\}\\}")){
 
 
 	mypat=function(pat,x){as.numeric(gregexpr(pat,x)[[1]])}
