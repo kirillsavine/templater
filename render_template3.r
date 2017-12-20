@@ -1,6 +1,9 @@
 
 
 render_template3=function(i_path_to_template,...){
+	
+	library(stringr)
+	
 	my_args=list(...)
 	x =readLines(i_path_to_template)
 	
