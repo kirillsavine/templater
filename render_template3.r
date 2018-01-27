@@ -3,6 +3,8 @@
 render_template3=function(i_path_to_template,...){
 	
 	library(stringr)
+	source(file=url("https://raw.githubusercontent.com/kirillsavine/data_handling/master/data_handling.r"))
+	
 	
 	my_args=list(...)
 	x =readLines(i_path_to_template)
